@@ -324,3 +324,24 @@ func cDBName(dbn string) (uintptr, func(), error) {
 }
 
 // TODO: Blob Reopen
+
+func (blob *Blob) WriteAt(p []byte, off int64) (n int, err error) {
+	if blob.blob == 0 {
+		return 0, fmt.Errorf("sqlite: write blob: %w", errInvalidBlob)
+	}
+	if err := blob.conn.interrupted(); err != nil {
+		return 0, fmt.Errorf("sqlite: write blob: %w", err)
+	}
+	fullLen := len(p)
+
+	for len(p) > 0 {
+		nn := copy(blob.bufSlice(), p)
+		res := ResultCode(lib.Xsqlite3_blob_write(blob.conn.tls, blob.blob, blob.buf, int32(nn), int32(off)))
+		if err := res.ToError(); err != nil {
+			return fullLen - len(p), fmt.Errorf("sqlite: write blob: %w", err)
+		}
+		p = p[nn:]
+		off += int64(nn)
+	}
+	return fullLen, nil
+}
