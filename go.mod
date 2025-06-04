@@ -1,15 +1,13 @@
 module zombiezen.com/go/sqlite
 
-go 1.23.0
-
-toolchain go1.24.2
+go 1.24.2
 
 require (
 	crawshaw.io/iox v0.0.0-20181124134642-c51c3df30797
 	github.com/chzyer/readline v1.5.0
 	github.com/google/go-cmp v0.6.0
 	golang.org/x/text v0.14.0
-	modernc.org/libc v1.65.7
+	modernc.org/libc v1.65.8
 	modernc.org/sqlite v1.37.1
 )
 
